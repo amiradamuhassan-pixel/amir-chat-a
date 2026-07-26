@@ -1,1437 +1,596 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AMIR CHAT APP</title><style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
-}
+<title>AMIR CHAT APP</title>
 
-body{
-    background:#f1f3f6;
-}
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f1f3f6}
+.app{max-width:500px;min-height:100vh;margin:auto;background:white}
+button{border:0;border-radius:25px;padding:14px 20px;background:#075e54;color:white;font-size:16px;cursor:pointer}
+input{width:100%;padding:14px;border:1px solid #ccc;border-radius:25px;font-size:16px;margin-bottom:12px}
+.auth{padding:40px 25px;text-align:center}
+.auth h1{color:#075e54;margin-bottom:15px}
+.auth p{color:#666;margin-bottom:25px}
+.auth button{width:100%;margin-top:5px}
+.switch{background:none;color:#075e54;padding:10px}
+.header{background:#075e54;color:white;padding:18px;display:flex;justify-content:space-between;align-items:center}
+.title{font-size:22px;font-weight:bold}
+.menu-button{background:transparent;font-size:28px;padding:0}
+.menu{display:none;padding:15px;border-bottom:1px solid #ddd}
+.menu button{width:100%;margin-bottom:10px;text-align:left;border-radius:10px}
+.logout{background:#c62828}
+.welcome{padding:18px;background:#e8f5e9}
+.welcome h2{color:#075e54}
+.search{padding:15px}
+.friends{padding:10px 15px}
+.friend{display:flex;align-items:center;gap:15px;padding:15px;border-bottom:1px solid #ddd;cursor:pointer}
+.avatar{width:55px;height:55px;border-radius:50%;background:#075e54;color:white;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold}
+.friend h3{font-size:20px}
+.friend p{color:green;margin-top:5px}
+.profile,.settings{display:none;padding:30px;text-align:center}
+.chat{display:none;min-height:100vh}
+.chat-header{background:#075e54;color:white;padding:15px;font-size:20px;font-weight:bold;display:flex;align-items:center}
+.back{background:white;color:#075e54;margin-right:10px;padding:8px 15px}
+.messages{height:70vh;padding:20px;background:#e5ddd5;overflow-y:auto}
+.message{background:#dcf8c6;padding:12px;border-radius:10px;max-width:80%;width:fit-content;margin-bottom:10px}
+.message.mine{margin-left:auto;background:#dcf8c6}
+.message small{display:block;color:#777;font-size:10px;margin-top:5px}
+.input-area{display:flex;gap:8px;padding:12px}
+.input-area input{margin:0;flex:1}
+.add-friend{display:flex;gap:8px;padding:0 15px 15px}
+.add-friend input{margin:0;flex:1}
+</style>
+</head>
 
-.app{
-    max-width:500px;
-    min-height:100vh;
-    margin:auto;
-    background:white;
-}
+<body>
 
-button{
-    border:none;
-    border-radius:25px;
-    padding:14px 20px;
-    background:#075e54;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
+<div class="app">
 
-input{
-    width:100%;
-    padding:14px;
-    border:1px solid #ccc;
-    border-radius:25px;
-    font-size:16px;
-    margin-bottom:12px;
-}
-
-.auth{
-    padding:40px 25px;
-    text-align:center;
-}
-
-.auth h1{
-    color:#075e54;
-    margin-bottom:15px;
-}
-
-.auth p{
-    color:#666;
-    margin-bottom:25px;
-}
-
-.auth button{
-    width:100%;
-    margin-top:5px;
-}
-
-.switch{
-    background:none;
-    color:#075e54;
-    padding:10px;
-}
-
-.header{
-    background:#075e54;
-    color:white;
-    padding:18px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.title{
-    font-size:22px;
-    font-weight:bold;
-}
-
-.menu-button{
-    background:transparent;
-    font-size:28px;
-    padding:0;
-}
-
-.menu{
-    display:none;
-    padding:15px;
-    border-bottom:1px solid #ddd;
-}
-
-.menu button{
-    width:100%;
-    margin-bottom:10px;
-    text-align:left;
-    border-radius:10px;
-}
-
-.logout{
-    background:#c62828;
-}
-
-.welcome{
-    padding:18px;
-    background:#e8f5e9;
-}
-
-.welcome h2{
-    color:#075e54;
-}
-
-.search{
-    padding:15px;
-}
-
-.friends{
-    padding:10px 15px;
-}
-
-.friend{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:15px;
-    border-bottom:1px solid #ddd;
-    cursor:pointer;
-}
-
-.avatar{
-    width:55px;
-    height:55px;
-    border-radius:50%;
-    background:#075e54;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
-    font-weight:bold;
-}
-
-.friend h3{
-    font-size:20px;
-}
-
-.friend p{
-    color:green;
-    margin-top:5px;
-}
-
-.profile,
-.settings{
-    display:none;
-    padding:30px;
-    text-align:center;
-}
-
-.chat{
-    display:none;
-    min-height:100vh;
-}
-
-.chat-header{
-    background:#075e54;
-    color:white;
-    padding:15px;
-    font-size:20px;
-    font-weight:bold;
-    display:flex;
-    align-items:center;
-}
-
-.back{
-    background:white;
-    color:#075e54;
-    margin-right:10px;
-    padding:8px 15px;
-}
-
-.messages{
-    height:70vh;
-    padding:20px;
-    background:#e5ddd5;
-    overflow-y:auto;
-}
-
-.message{
-    background:#dcf8c6;
-    padding:12px;
-    border-radius:10px;
-    max-width:80%;
-    width:fit-content;
-    margin-bottom:10px;
-}
-
-.message small{
-    display:block;
-    color:#777;
-    font-size:10px;
-    margin-top:5px;
-}
-
-.input-area{
-    display:flex;
-    gap:8px;
-    padding:12px;
-}
-
-.input-area input{
-    margin:0;
-    flex:1;
-}
-
-.add-friend{
-    display:flex;
-    gap:8px;
-    padding:0 15px 15px;
-}
-
-.add-friend input{
-    margin:0;
-    flex:1;
-}
-</style></head><body><div class="app"><!-- REGISTER / LOGIN --><div id="authPage" class="auth"><h1>AMIR CHAT APP</h1>
-
+<div id="authPage" class="auth">
+<h1>AMIR CHAT APP</h1>
 <p id="authTitle">Create your account</p>
 
-<input
-    type="text"
-    id="fullName"
-    placeholder="Full Name"
->
+<input type="text" id="fullName" placeholder="Full Name">
+<input type="email" id="email" placeholder="Email Address">
+<input type="password" id="password" placeholder="Password">
 
-<input
-    type="email"
-    id="email"
-    placeholder="Email Address"
->
+<button onclick="register()" id="registerButton">Register</button>
+<button onclick="login()" id="loginButton" style="display:none">Login</button>
 
-<input
-    type="password"
-    id="password"
-    placeholder="Password"
->
-
-<button onclick="register()" id="registerButton">
-    Register
-</button>
-
-<button
-    onclick="login()"
-    id="loginButton"
-    style="display:none;"
->
-    Login
-</button>
-
-<button
-    class="switch"
-    onclick="switchAuth()"
-    id="switchButton"
->
-    Already have an account? Login
+<button class="switch" onclick="switchAuth()" id="switchButton">
+Already have an account? Login
 </button>
 
 <p id="authMessage"></p>
-
-</div><!-- HOME --><div id="homePage" style="display:none;"><div class="header">
-
-    <div class="title">
-        AMIR CHAT APP
-    </div>
-
-    <button
-        class="menu-button"
-        onclick="toggleMenu()"
-    >
-        ☰
-    </button>
-
 </div>
 
+<div id="homePage" style="display:none">
+
+<div class="header">
+<div class="title">AMIR CHAT APP</div>
+<button class="menu-button" onclick="toggleMenu()">☰</button>
+</div>
 
 <div id="menu" class="menu">
-
-    <button onclick="showProfile()">
-        👤 Profile
-    </button>
-
-    <button onclick="showFriends()">
-        👥 My Friends
-    </button>
-
-    <button onclick="showSettings()">
-        ⚙️ Settings
-    </button>
-
-    <button
-        class="logout"
-        onclick="logout()"
-    >
-        🚪 Logout
-    </button>
-
+<button onclick="showProfile()">👤 Profile</button>
+<button onclick="showFriends()">👥 My Friends</button>
+<button onclick="showSettings()">⚙️ Settings</button>
+<button class="logout" onclick="logout()">🚪 Logout</button>
 </div>
-
 
 <div class="welcome">
-
-    <h2>
-        Welcome,
-        <span id="userName"></span>
-        👋
-    </h2>
-
-    <p>🟢 Online</p>
-
+<h2>Welcome, <span id="userName"></span> 👋</h2>
+<p>🟢 Online</p>
 </div>
-
 
 <div class="search">
-
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Search friends..."
-        oninput="searchFriends()"
-    >
-
+<input type="text" id="searchInput" placeholder="Search friends..." oninput="searchFriends()">
 </div>
-
 
 <div class="add-friend">
+<input type="text" id="friendInput" placeholder="Add friend's name">
+<button onclick="addFriend()">Add</button>
+</div>
 
-    <input
-        type="text"
-        id="friendInput"
-        placeholder="Add a friend"
-    >
+<h2 id="pageTitle" style="text-align:center;padding:15px">My Friends</h2>
 
-    <button onclick="addFriend()">
-        Add
-    </button>
+<div id="friendsList" class="friends"></div>
+
+<div id="profile" class="profile">
+<div class="avatar" style="margin:auto;width:90px;height:90px;font-size:40px">👤</div>
+<h2 id="profileName"></h2>
+<p style="color:green;margin-top:10px">🟢 Online</p>
+</div>
+
+<div id="settings" class="settings">
+<h2>⚙️ Settings</h2>
+<p style="margin-top:15px;color:#666">Settings will be added soon.</p>
+</div>
 
 </div>
 
+<div id="chatPage" class="chat">
 
-<h2
-    id="pageTitle"
-    style="text-align:center;padding:15px;"
->
-    My Friends
-</h2>
-
-
-<div
-    id="friendsList"
-    class="friends"
->
+<div class="chat-header">
+<button class="back" onclick="goBack()">←</button>
+<span id="chatFriend"></span>
 </div>
 
-
-<div
-    id="profile"
-    class="profile"
->
-
-    <div
-        class="avatar"
-        style="margin:auto;width:90px;height:90px;font-size:40px;"
-    >
-        👤
-    </div>
-
-    <h2 id="profileName"></h2>
-
-    <p style="color:green;margin-top:10px;">
-        🟢 Online
-    </p>
-
-</div>
-
-
-<div
-    id="settings"
-    class="settings"
->
-
-    <h2>⚙️ Settings</h2>
-
-    <p style="margin-top:15px;color:#666;">
-        Settings will be added soon.
-    </p>
-
-</div>
-
-</div><!-- CHAT --><div id="chatPage" class="chat"><div class="chat-header">
-
-    <button
-        class="back"
-        onclick="goBack()"
-    >
-        ←
-    </button>
-
-    <span id="chatFriend"></span>
-
-</div>
-
-
-<div
-    id="messages"
-    class="messages"
->
-</div>
-
+<div id="messages" class="messages"></div>
 
 <div class="input-area">
-
-    <input
-        type="text"
-        id="messageInput"
-        placeholder="Type a message..."
-    >
-
-    <button onclick="sendMessage()">
-        Send
-    </button>
+<input type="text" id="messageInput" placeholder="Type a message...">
+<button onclick="sendMessage()">Send</button>
+</div>
 
 </div>
 
-</div></div><script type="module">
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 import {
-    initializeApp
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+updateProfile,
+onAuthStateChanged,
+signOut
 }
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    updateProfile,
-    onAuthStateChanged,
-    signOut
+getDatabase,
+ref,
+push,
+onValue,
+set
 }
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-import {
-    getDatabase,
-    ref,
-    push,
-    onValue,
-    set
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
 
 const firebaseConfig = {
 
-    apiKey:
-    "AIzaSyBeOkJu7dUEOMvWSV8gBN89P5EkUamrBD8",
+apiKey:"AIzaSyBeOkJu7dUEOMvWSV8gBN89P5EkUamrBD8",
 
-    authDomain:
-    "amir-connect.firebaseapp.com",
+authDomain:"amir-connect.firebaseapp.com",
 
-    databaseURL:
-    "https://amir-connect-default-rtdb.firebaseio.com",
+databaseURL:"https://amir-connect-default-rtdb.firebaseio.com",
 
-    projectId:
-    "amir-connect",
+projectId:"amir-connect",
 
-    storageBucket:
-    "amir-connect.firebasestorage.app",
+storageBucket:"amir-connect.firebasestorage.app",
 
-    messagingSenderId:
-    "225993635791",
+messagingSenderId:"225993635791",
 
-    appId:
-    "1:225993635791:web:84bf4e2120176dc6bc44ba",
+appId:"1:225993635791:web:84bf4e2120176dc6bc44ba",
 
-    measurementId:
-    "G-1GHRSSYBCG"
+measurementId:"G-1GHRSSYBCG"
 
 };
 
 
-const app =
-initializeApp(firebaseConfig);
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const database=getDatabase(app);
 
+let currentUser=null;
+let currentFriend=null;
+let messageListener=null;
 
-const auth =
-getAuth(app);
-
-
-const database =
-getDatabase(app);
-
-
-let currentUser = null;
-
-let currentFriend = null;
-
-
-let friends = [
-
-    {
-        name:"Hamza",
-        status:"Online"
-    },
-
-    {
-        name:"Khalifa",
-        status:"Online"
-    },
-
-    {
-        name:"Aminu",
-        status:"Offline"
-    }
-
+let friends=[
+{name:"Hamza",status:"Online"},
+{name:"Khalifa",status:"Online"},
+{name:"Aminu",status:"Offline"}
 ];
 
 
-window.register = async function(){
+window.register=async function(){
 
-    const name =
-    document
-    .getElementById("fullName")
-    .value
-    .trim();
+const name=document.getElementById("fullName").value.trim();
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
 
+if(!name||!email||!password){
+showMessage("Please fill in all fields.");
+return;
+}
 
-    const email =
-    document
-    .getElementById("email")
-    .value
-    .trim();
+try{
 
+const result=await createUserWithEmailAndPassword(
+auth,email,password
+);
 
-    const password =
-    document
-    .getElementById("password")
-    .value;
+await updateProfile(result.user,{
+displayName:name
+});
 
+await set(
+ref(database,"users/"+result.user.uid),
+{
+name:name,
+email:email,
+uid:result.user.uid
+}
+);
 
-    if(!name || !email || !password){
+showMessage("Registration successful!");
 
-        showMessage(
-            "Please fill in all fields."
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        const result =
-        await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
-
-
-        await updateProfile(
-
-            result.user,
-
-            {
-                displayName:name
-            }
-
-        );
-
-
-        await set(
-
-            ref(
-                database,
-                "users/" +
-                result.user.uid
-            ),
-
-            {
-
-                name:name,
-
-                email:email,
-
-                uid:result.user.uid
-
-            }
-
-        );
-
-
-        showMessage(
-            "Registration successful!"
-        );
-
-
-    }
-
-    catch(error){
-
-        showMessage(
-            error.message
-        );
-
-    }
+}catch(error){
+showMessage(error.message);
+}
 
 };
 
 
-window.login = async function(){
+window.login=async function(){
 
-    const email =
-    document
-    .getElementById("email")
-    .value
-    .trim();
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
 
+try{
 
-    const password =
-    document
-    .getElementById("password")
-    .value;
+await signInWithEmailAndPassword(
+auth,email,password
+);
 
-
-    if(!email || !password){
-
-        showMessage(
-            "Please enter your email and password."
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        await signInWithEmailAndPassword(
-
-            auth,
-
-            email,
-
-            password
-
-        );
-
-    }
-
-    catch(error){
-
-        showMessage(
-            error.message
-        );
-
-    }
+}catch(error){
+showMessage(error.message);
+}
 
 };
 
 
-window.switchAuth = function(){
+window.switchAuth=function(){
 
-    const registerButton =
-    document
-    .getElementById(
-        "registerButton"
-    );
+const registerButton=document.getElementById("registerButton");
+const loginButton=document.getElementById("loginButton");
+const fullName=document.getElementById("fullName");
+const title=document.getElementById("authTitle");
+const switchButton=document.getElementById("switchButton");
 
+if(registerButton.style.display!=="none"){
 
-    const loginButton =
-    document
-    .getElementById(
-        "loginButton"
-    );
+registerButton.style.display="none";
+loginButton.style.display="block";
+fullName.style.display="none";
+title.innerText="Login to your account";
+switchButton.innerText="Don't have an account? Register";
 
+}else{
 
-    const fullName =
-    document
-    .getElementById(
-        "fullName"
-    );
+registerButton.style.display="block";
+loginButton.style.display="none";
+fullName.style.display="block";
+title.innerText="Create your account";
+switchButton.innerText="Already have an account? Login";
 
-
-    const title =
-    document
-    .getElementById(
-        "authTitle"
-    );
-
-
-    const switchButton =
-    document
-    .getElementById(
-        "switchButton"
-    );
-
-
-    if(
-        registerButton.style.display !==
-        "none"
-    ){
-
-        registerButton.style.display =
-        "none";
-
-        loginButton.style.display =
-        "block";
-
-        fullName.style.display =
-        "none";
-
-        title.innerText =
-        "Login to your account";
-
-        switchButton.innerText =
-        "Don't have an account? Register";
-
-    }
-
-    else{
-
-        registerButton.style.display =
-        "block";
-
-        loginButton.style.display =
-        "none";
-
-        fullName.style.display =
-        "block";
-
-        title.innerText =
-        "Create your account";
-
-        switchButton.innerText =
-        "Already have an account? Login";
-
-    }
+}
 
 };
 
 
 function showMessage(message){
 
-    document
-    .getElementById(
-        "authMessage"
-    )
-    .innerText =
-    message;
+document.getElementById("authMessage").innerText=message;
 
 }
 
 
-onAuthStateChanged(
+onAuthStateChanged(auth,function(user){
 
-    auth,
+if(user){
 
-    function(user){
+currentUser=user;
 
-        if(user){
+document.getElementById("authPage").style.display="none";
+document.getElementById("homePage").style.display="block";
 
-            currentUser =
-            user;
+document.getElementById("userName").innerText=
+user.displayName||user.email;
 
+document.getElementById("profileName").innerText=
+user.displayName||user.email;
 
-            document
-            .getElementById(
-                "authPage"
-            )
-            .style.display =
-            "none";
+displayFriends();
 
+}else{
 
-            document
-            .getElementById(
-                "homePage"
-            )
-            .style.display =
-            "block";
+document.getElementById("authPage").style.display="block";
+document.getElementById("homePage").style.display="none";
+document.getElementById("chatPage").style.display="none";
 
+}
 
-            document
-            .getElementById(
-                "userName"
-            )
-            .innerText =
-            user.displayName ||
-            user.email;
-
-
-            document
-            .getElementById(
-                "profileName"
-            )
-            .innerText =
-            user.displayName ||
-            user.email;
-
-
-            displayFriends();
-
-        }
-
-        else{
-
-            document
-            .getElementById(
-                "authPage"
-            )
-            .style.display =
-            "block";
-
-
-            document
-            .getElementById(
-                "homePage"
-            )
-            .style.display =
-            "none";
-
-
-            document
-            .getElementById(
-                "chatPage"
-            )
-            .style.display =
-            "none";
-
-        }
-
-    }
-
-);
+});
 
 
 function displayFriends(){
 
-    const list =
-    document
-    .getElementById(
-        "friendsList"
-    );
+const list=document.getElementById("friendsList");
+list.innerHTML="";
 
+friends.forEach(function(friend){
 
-    list.innerHTML =
-    "";
+const div=document.createElement("div");
 
+div.className="friend";
 
-    friends.forEach(
+div.innerHTML=`
 
-        function(friend){
+<div class="avatar">
+${friend.name.charAt(0).toUpperCase()}
+</div>
 
-            const div =
-            document
-            .createElement(
-                "div"
-            );
+<div>
+<h3>${friend.name}</h3>
+<p>${friend.status}</p>
+</div>
 
+`;
 
-            div.className =
-            "friend";
+div.onclick=function(){
+openChat(friend.name);
+};
 
+list.appendChild(div);
 
-            div.innerHTML =
-
-            `
-
-            <div class="avatar">
-
-                ${friend.name
-                .charAt(0)
-                .toUpperCase()}
-
-            </div>
-
-            <div>
-
-                <h3>
-                    ${friend.name}
-                </h3>
-
-                <p>
-                    ${friend.status}
-                </p>
-
-            </div>
-
-            `;
-
-
-            div.onclick =
-            function(){
-
-                openChat(
-                    friend.name
-                );
-
-            };
-
-
-            list.appendChild(
-                div
-            );
-
-        }
-
-    );
+});
 
 }
 
 
-window.addFriend = function(){
+window.addFriend=function(){
 
-    const input =
-    document
-    .getElementById(
-        "friendInput"
-    );
+const input=document.getElementById("friendInput");
+const name=input.value.trim();
 
+if(!name)return;
 
-    const name =
-    input
-    .value
-    .trim();
+if(!friends.some(f=>f.name.toLowerCase()===name.toLowerCase())){
 
+friends.push({
+name:name,
+status:"Online"
+});
 
-    if(!name){
+}
 
-        alert(
-            "Please enter a friend's name."
-        );
-
-        return;
-
-    }
-
-
-    friends.push({
-
-        name:name,
-
-        status:"Online"
-
-    });
-
-
-    displayFriends();
-
-
-    input.value =
-    "";
+displayFriends();
+input.value="";
 
 };
 
 
-window.openChat = function(name){
+window.openChat=function(name){
 
-    currentFriend =
-    name;
+currentFriend=name;
 
+document.getElementById("homePage").style.display="none";
+document.getElementById("chatPage").style.display="block";
+document.getElementById("chatFriend").innerText=name;
 
-    document
-    .getElementById(
-        "homePage"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "chatPage"
-    )
-    .style.display =
-    "block";
-
-
-    document
-    .getElementById(
-        "chatFriend"
-    )
-    .innerText =
-    name;
-
-
-    listenToMessages();
+listenToMessages();
 
 };
+
+
+function getChatId(){
+
+const names=[
+
+currentUser.displayName||currentUser.email,
+
+currentFriend
+
+];
+
+return names
+.map(name=>name.toLowerCase().trim())
+.sort()
+.join("_")
+.replace(/[.#$[\]]/g,"");
+
+}
 
 
 function listenToMessages(){
 
-    const chatId =
-    currentUser.uid +
-    "_" +
-    currentFriend;
+const chatId=getChatId();
 
+const messagesRef=ref(
+database,
+"chats/"+chatId
+);
 
-    const messagesRef =
-    ref(
+if(messageListener){
+messageListener();
+}
 
-        database,
+messageListener=onValue(
+messagesRef,
+function(snapshot){
 
-        "chats/" +
-        chatId
+const data=snapshot.val();
 
-    );
+const box=document.getElementById("messages");
 
+box.innerHTML="";
 
-    onValue(
+if(!data){
 
-        messagesRef,
+box.innerHTML=`
+<div class="message">
+Start chatting with ${currentFriend}.
+</div>
+`;
 
-        function(snapshot){
+return;
 
-            const data =
-            snapshot.val();
+}
 
+Object.values(data)
+.sort((a,b)=>a.time-b.time)
+.forEach(function(message){
 
-            const box =
-            document
-            .getElementById(
-                "messages"
-            );
+const div=document.createElement("div");
 
+div.className="message";
 
-            box.innerHTML =
-            "";
+if(message.uid===currentUser.uid){
+div.classList.add("mine");
+}
 
+div.innerHTML=`
 
-            if(!data){
+${message.text}
 
-                box.innerHTML =
+<small>${message.sender}</small>
 
-                `<div class="message">
+`;
 
-                    Start chatting with
-                    ${currentFriend}.
+box.appendChild(div);
 
-                </div>`;
+});
 
-                return;
+box.scrollTop=box.scrollHeight;
 
-            }
-
-
-            Object
-            .values(data)
-            .forEach(
-
-                function(message){
-
-                    const div =
-                    document
-                    .createElement(
-                        "div"
-                    );
-
-
-                    div.className =
-                    "message";
-
-
-                    div.innerHTML =
-
-                    `
-
-                    ${message.text}
-
-                    <small>
-                        ${message.sender}
-                    </small>
-
-                    `;
-
-
-                    box.appendChild(
-                        div
-                    );
-
-                }
-
-            );
-
-
-            box.scrollTop =
-            box.scrollHeight;
-
-        }
-
-    );
+});
 
 }
 
 
-window.sendMessage = function(){
+window.sendMessage=function(){
 
-    const input =
-    document
-    .getElementById(
-        "messageInput"
-    );
+const input=document.getElementById("messageInput");
+const text=input.value.trim();
 
+if(!text)return;
 
-    const text =
-    input
-    .value
-    .trim();
+const chatId=getChatId();
 
+push(
+ref(database,"chats/"+chatId),
+{
 
-    if(!text){
+text:text,
 
-        return;
+sender:
+currentUser.displayName||currentUser.email,
 
-    }
+uid:currentUser.uid,
 
+time:Date.now()
 
-    const chatId =
-    currentUser.uid +
-    "_" +
-    currentFriend;
-
-
-    push(
-
-        ref(
-
-            database,
-
-            "chats/" +
-            chatId
-
-        ),
-
-        {
-
-            text:text,
-
-            sender:
-
-            currentUser.displayName ||
-            currentUser.email,
-
-            uid:
-
-            currentUser.uid,
-
-            time:
-
-            Date.now()
-
-        }
-
-    );
-
-
-    input.value =
-    "";
-
-};
-
-
-document
-.getElementById(
-    "messageInput"
-)
-.addEventListener(
-
-    "keydown",
-
-    function(event){
-
-        if(
-            event.key ===
-            "Enter"
-        ){
-
-            sendMessage();
-
-        }
-
-    }
+}
 
 );
 
-
-window.goBack = function(){
-
-    document
-    .getElementById(
-        "chatPage"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "homePage"
-    )
-    .style.display =
-    "block";
+input.value="";
 
 };
 
 
-window.toggleMenu = function(){
+document.getElementById("messageInput")
+.addEventListener("keydown",function(event){
 
-    const menu =
-    document
-    .getElementById(
-        "menu"
-    );
+if(event.key==="Enter"){
+sendMessage();
+}
+
+});
 
 
-    menu.style.display =
-    menu.style.display ===
-    "block"
+window.goBack=function(){
 
-    ?
-
-    "none"
-
-    :
-
-    "block";
+document.getElementById("chatPage").style.display="none";
+document.getElementById("homePage").style.display="block";
 
 };
 
 
-window.showProfile = function(){
+window.toggleMenu=function(){
 
-    document
-    .getElementById(
-        "friendsList"
-    )
-    .style.display =
-    "none";
+const menu=document.getElementById("menu");
 
-
-    document
-    .getElementById(
-        "profile"
-    )
-    .style.display =
-    "block";
-
-
-    document
-    .getElementById(
-        "settings"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "pageTitle"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "menu"
-    )
-    .style.display =
-    "none";
+menu.style.display=
+menu.style.display==="block"?"none":"block";
 
 };
 
 
-window.showFriends = function(){
+window.showProfile=function(){
 
-    document
-    .getElementById(
-        "friendsList"
-    )
-    .style.display =
-    "block";
-
-
-    document
-    .getElementById(
-        "profile"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "settings"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "pageTitle"
-    )
-    .style.display =
-    "block";
-
-
-    document
-    .getElementById(
-        "menu"
-    )
-    .style.display =
-    "none";
-
-
-    displayFriends();
+document.getElementById("friendsList").style.display="none";
+document.getElementById("profile").style.display="block";
+document.getElementById("settings").style.display="none";
+document.getElementById("pageTitle").style.display="none";
+document.getElementById("menu").style.display="none";
 
 };
 
 
-window.showSettings = function(){
+window.showFriends=function(){
 
-    document
-    .getElementById(
-        "friendsList"
-    )
-    .style.display =
-    "none";
+document.getElementById("friendsList").style.display="block";
+document.getElementById("profile").style.display="none";
+document.getElementById("settings").style.display="none";
+document.getElementById("pageTitle").style.display="block";
+document.getElementById("menu").style.display="none";
 
-
-    document
-    .getElementById(
-        "profile"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "settings"
-    )
-    .style.display =
-    "block";
-
-
-    document
-    .getElementById(
-        "pageTitle"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "menu"
-    ).style.display =
-    "none";
+displayFriends();
 
 };
 
 
-window.searchFriends = function(){
+window.showSettings=function(){
 
-    const search =
-    document
-    .getElementById(
-        "searchInput"
-    )
-    .value
-    .toLowerCase();
-
-
-    document
-    .querySelectorAll(
-        ".friend"
-    )
-    .forEach(
-
-        function(friend){
-
-            const name =
-            friend
-            .querySelector(
-                "h3"
-            )
-            .innerText
-            .toLowerCase();
-
-
-            friend.style.display =
-
-            name.includes(search)
-
-            ?
-
-            "flex"
-
-            :
-
-            "none";
-
-        }
-
-    );
+document.getElementById("friendsList").style.display="none";
+document.getElementById("profile").style.display="none";
+document.getElementById("settings").style.display="block";
+document.getElementById("pageTitle").style.display="none";
+document.getElementById("menu").style.display="none";
 
 };
 
 
-window.logout = function(){
+window.searchFriends=function(){
 
-    signOut(
-        auth
-    );
+const search=document
+.getElementById("searchInput")
+.value
+.toLowerCase();
+
+document.querySelectorAll(".friend")
+.forEach(function(friend){
+
+const name=friend
+.querySelector("h3")
+.innerText
+.toLowerCase();
+
+friend.style.display=
+name.includes(search)?"flex":"none";
+
+});
 
 };
 
-</script></body>
+
+window.logout=function(){
+
+signOut(auth);
+
+};
+
+</script>
+
+</body>
 </html>
